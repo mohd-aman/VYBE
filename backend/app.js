@@ -10,11 +10,7 @@ const aiRouter = require("./routes/aiRoutes");
 const paymentRouter = require("./routes/paymentRoutes")
 
 const app = express();
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-  })
-);
+app.use(cors());
 
 //Apply this middleware to every incoming request,
 // express.json() is a built-in middleware that:
