@@ -1,0 +1,56 @@
+const express = require("express");
+const cors = require("cors");
+const authRouter = require('./routes/authRoutes');
+const movieRouter = require('./routes/movieRoutes');
+const theatreRouter = require('./routes/theatreRoutes');
+const showRouter = require("./routes/showRoutes");
+const adminRouter = require("./routes/adminRoutes");
+const bookingrouter = require("./routes/bookingRoutes");
+const aiRouter = require("./routes/aiRoutes");
+const paymentRouter = require("./routes/paymentRoutes")
+
+const app = express();
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+  })
+);
+
+//Apply this middleware to every incoming request,
+// express.json() is a built-in middleware that:
+// Step 1: Checks if the request has a JSON body.
+// Step 2: Reads the raw bytes.
+// Step 3: Parses them into a JavaScript object.
+// Step 4: Attaches the result to req.body.
+app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+});
+
+//health check
+app.get("/health",(req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is Healthy",
+  });
+});
+
+app.use("/api/auth",authRouter);
+app.use("/api/admin",adminRouter);
+app.use("/api/bookings",bookingrouter);
+app.use("/api/ai",aiRouter);
+app.use("/api/payments",paymentRouter);
+app.use("/movies",movieRouter);
+app.use("/theatres",theatreRouter)
+app.use("/shows",showRouter);
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
+
+module.exports = app;
